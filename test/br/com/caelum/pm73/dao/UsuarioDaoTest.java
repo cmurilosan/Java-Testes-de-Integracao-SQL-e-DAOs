@@ -20,7 +20,7 @@ public class UsuarioDaoTest {
 		
 		Usuario usuario = new Usuario("Fulano de Tal", "fulado@detal.com.br");
 		
-		String sql = "from Usuario u where u.nome = :nome and u.email = :email";
+		String sql = "from Usuario u where u.nome = :nome and x.email = :email";
 		Mockito.when(session.createQuery(sql)).thenReturn(query);
 		Mockito.when(query.uniqueResult()).thenReturn(usuario);
 		Mockito.when(query.setParameter("nome", "Fulano de Tal")).thenReturn(query);
