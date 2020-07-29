@@ -120,5 +120,24 @@ public class LeilaoDaoTest {
 		assertEquals(1, antigos.size());
 		assertEquals("PS4", antigos.get(0).getNome());
 	}
+	
+	@Test
+	public void deveTrazerSomenteLeiloesAntigosHaMaisDe7Dias() {
+		Usuario murilo = new Usuario("Murilo", "murilo@cassio.com.br");
+		
+		Leilao noLimite = new Leilao("PS4", 1500.0, murilo, false);
+		
+		Calendar dataAntiga = Calendar.getInstance();
+		dataAntiga.add(Calendar.DAY_OF_MONTH, -7);
+		
+		noLimite.setDataAbertura(dataAntiga);
+		
+		usuarioDao.salvar(murilo);
+		leilaoDao.salvar(noLimite);
+		
+		List<Leilao> antigos = leilaoDao.antigos();
+		
+		assertEquals(1, antigos.size());
+	}
 
 }
