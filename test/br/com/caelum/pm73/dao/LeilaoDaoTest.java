@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import br.com.caelum.pm73.dominio.Leilao;
+import br.com.caelum.pm73.dominio.LeilaoBuilder;
 import br.com.caelum.pm73.dominio.Usuario;
 
 public class LeilaoDaoTest {
@@ -78,6 +79,19 @@ public class LeilaoDaoTest {
 		long total = leilaoDao.total();
 		
 		assertEquals(0L, total);
+	}
+
+	@Test
+	public void deveRetornarZeroSeNaoHaLeiloesNovos() {
+		Usuario murilo = new Usuario("Murilo", "murilo@cassio.com.br");
+
+		Leilao encerrado = new LeilaoBuilder().comDono(murilo).encerrado().constroi();
+		Leilao tambemEncerrado = new LeilaoBuilder().comDono(murilo).encerrado().constroi();
+
+		long total = leilaoDao.total();
+
+		assertEquals(0L, total);
+
 	}
 	
 	@Test
