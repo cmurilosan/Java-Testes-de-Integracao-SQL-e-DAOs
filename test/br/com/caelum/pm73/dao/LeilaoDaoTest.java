@@ -140,4 +140,66 @@ public class LeilaoDaoTest {
 		assertEquals(1, antigos.size());
 	}
 
+	@Test
+	public void deveTrazerLeiloesNaoEncerradosNoPeriodo() {
+
+		// Criando as datas
+		Calendar comecoDoIntervalo = Calendar.getInstance();
+		comecoDoIntervalo.add(Calendar.DAY_OF_MONTH, -10);
+		Calendar fimDoIntervalo = Calendar.getInstance();
+		Calendar dataDoLeilao1 = Calendar.getInstance();
+		dataDoLeilao1.add(Calendar.DAY_OF_MONTH, -2);
+		Calendar dataDoLeilao2 = Calendar.getInstance();
+		dataDoLeilao2.add(Calendar.DAY_OF_MONTH, -20);
+
+		Usuario murilo = new Usuario("Murilo", "murilo@cassio.com.br");
+
+		// Criando os leilões | Cada um com uma data
+		Leilao leilao1 = new Leilao("PS4", 1300.0, murilo, false);
+		leilao1.setDataAbertura(dataDoLeilao1);
+		Leilao leilao2 = new Leilao("Geladeira", 1700.0, murilo, false);
+		leilao2.setDataAbertura(dataDoLeilao2);
+
+		// Persistindo os objetos no banco
+		usuarioDao.salvar(murilo);
+		leilaoDao.salvar(leilao1);
+		leilaoDao.salvar(leilao2);
+
+		// Invocando o método para testar
+		List<Leilao> leiloes = leilaoDao.porPeriodo(comecoDoIntervalo, fimDoIntervalo);
+
+		// Garantindo que a query funcionou
+		assertEquals(1, leiloes.size());
+		assertEquals("PS4", leiloes.get(0).getNome());
+
+	}
+
+	@Test
+	public void naoDeveTrazerLeiloesEncerradosNoPeriodo() {
+
+		// Criando as datas
+		Calendar comecoDoIntervalo = Calendar.getInstance();
+		comecoDoIntervalo.add(Calendar.DAY_OF_MONTH, -10);
+		Calendar fimDoIntervalo = Calendar.getInstance();
+		Calendar dataDoLeilao1 = Calendar.getInstance();
+		dataDoLeilao1.add(Calendar.DAY_OF_MONTH, -2);
+
+		Usuario murilo = new Usuario("Murilo", "murilo@cassio.com.br");
+
+		// Criando os leilões | Cada um com uma data
+		Leilao leilao1 = new Leilao("PS4", 1300.0, murilo, false);
+		leilao1.setDataAbertura(dataDoLeilao1);
+		leilao1.encerra();
+
+		// Persistindo os objetos do banco
+		usuarioDao.salvar(murilo);
+		leilaoDao.salvar(leilao1);
+
+		// Invocando o metodo para testar
+		List<Leilao> leiloes = leilaoDao.porPeriodo(comecoDoIntervalo, fimDoIntervalo);
+
+		// Garantindo que a query funcionou
+		assertEquals(0, leiloes.size());
+	}
+
 }
