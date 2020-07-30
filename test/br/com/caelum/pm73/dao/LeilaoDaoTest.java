@@ -10,6 +10,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.caelum.pm73.dominio.Lance;
 import br.com.caelum.pm73.dominio.Leilao;
 import br.com.caelum.pm73.dominio.LeilaoBuilder;
 import br.com.caelum.pm73.dominio.Usuario;
@@ -215,5 +216,44 @@ public class LeilaoDaoTest {
 		// Garantindo que a query funcionou
 		assertEquals(0, leiloes.size());
 	}
+
+	@Test
+	public void deveRetornarLeiloesDisputados() {
+		Usuario dono = new Usuario("Cassio", "cassio@santos.com.br");
+        Usuario murilo = new Usuario("Murilo", "murilo@cassio.com.br");
+		Usuario kakashi = new Usuario("Kakashi", "kakashi@sensei.com.br");
+
+		Leilao leilao1 = new LeilaoBuilder().comNome("Geladeira").comValor(1500.0)
+		.comDono(dono).diasAtras(2)
+		.comLance(new Lance(Calendar.getInstance(), murilo, 2000.0))
+		.constroi();
+
+		Leilao leilao2 = new LeilaoBuilder().comNome("PS4").comValor(1500.0)
+		.comDono(dono).diasAtras(6)
+		.comLance(new Lance(Calendar.getInstance(), murilo, 1800.0))
+		.comLance(new Lance(Calendar.getInstance(), kakashi, 1900.0))
+		.comLance(new Lance(Calendar.getInstance(), murilo, 1950.0))
+		.constroi();
+
+		Leilao leilao3 = new LeilaoBuilder().comNome("Iphone").comValor(5000.0)
+		.comDono(dono).diasAtras(12)
+		.comLance(new Lance(Calendar.getInstance(), murilo, 5500.0))
+		.constroi();
+
+		usuarioDao.salvar(dono);
+		usuarioDao.salvar(murilo);
+		usuarioDao.salvar(kakashi);
+		leilaoDao.salvar(leilao1);
+		leilaoDao.salvar(leilao2);
+		leilaoDao.salvar(leilao3);
+
+		List<Leilao> leiloes = leilaoDao.disputadosEntre(1000.0, 3000.0);
+
+		assertEquals(1, leiloes.size());
+		assertEquals("PS4", leiloes.get(0).getNome());
+		
+	}
+
+
 
 }

@@ -1,0 +1,9 @@
+{
+    "java.codeGeneration.hashCodeEquals.useJava7Objects": true,
+    "java.codeGeneration.generateComments": true,
+    "java.codeGeneration.hashCodeEquals.useInstanceof": true,
+    "java.test.config": {},
+    "workbench.editorAssociations": [
+    
+    ]
+}
