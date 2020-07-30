@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNull;
 
 import org.hibernate.Session;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import br.com.caelum.pm73.dominio.Usuario;
