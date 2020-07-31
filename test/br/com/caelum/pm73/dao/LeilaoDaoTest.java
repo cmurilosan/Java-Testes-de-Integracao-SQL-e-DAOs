@@ -254,6 +254,50 @@ public class LeilaoDaoTest {
 		
 	}
 
+	@Test
+	public void listaSomenteOsLeiloesDoUsuario() throws Exception{
+		Usuario dono = new Usuario("Cassio", "cassio@santos.com.br");
+		Usuario comprador1 = new Usuario("Murilo", "murilo@cassio.com.br");
+		Usuario comprador2 = new Usuario("Santos", "santos@sensei.com.br");
+		Leilao leilao = new LeilaoBuilder()
+		.comDono(dono)
+		.comValor(50.0)
+		.comLance(new Lance(Calendar.getInstance(), comprador1, 100.0))
+		.comLance(new Lance(Calendar.getInstance(), comprador2, 200.0))
+		.constroi();
+		Leilao leilao2 = new LeilaoBuilder()
+		.comDono(dono)
+		.comValor(250.0)
+		.comLance(new Lance(Calendar.getInstance(), comprador2, 100))
+		.constroi();
+		usuarioDao.salvar(dono);
+		usuarioDao.salvar(comprador1);
+		usuarioDao.salvar(comprador2);
+		leilaoDao.salvar(leilao);
+		leilaoDao.salvar(leilao2);
 
+		List<Leilao> leiloes = leilaoDao.listaLeiloesDoUsuario(comprador1);
+		assertEquals(1, leiloes.size());
+		assertEquals(leilao, leiloes.get(0));
+	}
+
+	@Test
+    public void listaDeLeiloesDeUmUsuarioNaoTemRepeticao() throws Exception {
+        Usuario dono = new Usuario("Cassio", "cassio@santos.com.br");
+		Usuario comprador1 = new Usuario("Murilo", "murilo@cassio.com.br");
+        Leilao leilao = new LeilaoBuilder()
+            .comDono(dono)
+            .comLance(new Lance(Calendar.getInstance(), comprador1, 100.0))
+            .comLance(new Lance(Calendar.getInstance(), comprador1, 200.0))
+            .constroi();
+        usuarioDao.salvar(dono);
+        usuarioDao.salvar(comprador1);
+        leilaoDao.salvar(leilao);
+
+        List<Leilao> leiloes = leilaoDao.listaLeiloesDoUsuario(comprador1);
+        assertEquals(1, leiloes.size());
+		assertEquals(leilao, leiloes.get(0));
+		// Esse teste terá um BUG. O método devolve uma lista de leilões contendo repetições!
+    }
 
 }
