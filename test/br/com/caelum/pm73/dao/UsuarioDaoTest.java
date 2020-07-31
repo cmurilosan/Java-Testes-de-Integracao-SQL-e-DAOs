@@ -45,4 +45,20 @@ public class UsuarioDaoTest {
 		assertNull(usuarioDoBanco);
 	}
 
+	@Test
+	public void deveDeletarUmUsuario() {
+		Usuario usuario = new Usuario("Murilo", "murilo@email.com");
+
+		usuarioDao.salvar(usuario);
+		usuarioDao.deletar(usuario);
+
+		// Envia tudo para o banco de dados
+		session.flush();
+		session.clear();
+
+		Usuario usuarioNoBanco = usuarioDao.porNomeEEmail("Murilo", "murilo@email.com");
+
+		assertNull(usuarioNoBanco);
+	}
+
 }
